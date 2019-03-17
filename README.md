@@ -37,11 +37,14 @@ TODO NEXT
 ## Build and Run
 
 After clone it, build:
-> mkdir build && cd build
-> cmake ..
-> make -j
-
+``` shell
+ mkdir build && cd build
+ cmake ..
+ make -j
+ ```
 Then run their test demos
 
-> # math_utils
-> ./bin/test_optimizer
+``` shell
+ # math_utils
+ ./bin/test_optimizer
+ ```
