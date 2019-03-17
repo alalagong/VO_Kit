@@ -25,7 +25,7 @@ some Mathematical tools
 
 - Nonlinear least-square optimizer for simple problem. (lack of sparse solve and marginalization etc.)
 
-- base function for SO3 SE3 quaternion max min etc.
+- Base function for SO3 SE3 quaternion max min etc.
 
 ### 2.alignment
 
