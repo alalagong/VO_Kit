@@ -4,8 +4,6 @@ Some algorithm modules for VO, the Kit just for verification. May be **not enoug
 
 ## Prerequisites
 
----
-
 This is tested in **Ubuntu 16.04**.
 
 ### C++11
@@ -20,8 +18,6 @@ we use Eigen 3.2.29
 
 ## Modules
 
----
-
 ### 1.math_utils
 
 some Mathematical tools
@@ -29,7 +25,6 @@ some Mathematical tools
 - Nonlinear least-square optimizer for simple problem. (lack of sparse solve and marginalization etc.)
 
 - base function for SO3 SE3 quaternion max min etc.
-
 
 ### 2.alignment
 
