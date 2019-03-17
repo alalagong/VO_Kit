@@ -2,8 +2,6 @@
 
 Some algorithm modules for VO, the Kit just for verification. May be **not enough stable ！**
 
----
-
 ## Prerequisites
 
 This is tested in **Ubuntu 16.04**.
@@ -18,7 +16,6 @@ We use OpenCV 3.2.0.
 
 we use Eigen 3.2.29
 
----
 
 ## Modules
 
@@ -36,3 +33,15 @@ The module contains feature alignment and sparse image alignment based on **inve
 
 TODO NEXT
 
+
+## Build and Run
+
+After clone it, build:
+> mkdir build && cd build
+> cmake ..
+> make -j
+
+Then run their test demos
+
+> # math_utils
+> ./bin/test_optimizer
