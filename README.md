@@ -2,6 +2,8 @@
 
 Some algorithm modules for VO, the Kit just for verification. May be **not enough stable ！**
 
+---
+
 ## Prerequisites
 
 This is tested in **Ubuntu 16.04**.
@@ -15,6 +17,8 @@ We use OpenCV 3.2.0.
 ### Eigen
 
 we use Eigen 3.2.29
+
+---
 
 ## Modules
 
