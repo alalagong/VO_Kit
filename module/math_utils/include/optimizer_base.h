@@ -56,7 +56,8 @@ public:
         lambda_max_(1e5),   // from GTSAM3.2.1
         lambda_min_(0.0),
         min_fidelity_(1e-3),
-        Delta_(1.5)      //TODO: may be set by user
+        Delta_init_(1.5),
+        Delta_(Delta_init_)
         { }
 
     // run optimize
@@ -74,7 +75,7 @@ public:
     // Reset
     void reset()
     {
-        Delta_=150;
+        Delta_=Delta_init_;
         rho_=-1;
         chi2_=0;
         lambda_factor_=2;
@@ -116,8 +117,9 @@ protected:
     Matrix<double, D, 1>        delta_GN_x_;    //!< step from GaussNewton
     Matrix<double, D, 1>        delta_SD_x_;    //!< step from SteepestDescent consists of direction and length
     double                      beta_;          //!< when GN exceed trust region and SD not exceed it, need beta to make delta_x = region
+    double                      Delta_init_;    //!< initial radius of trust region
     double                      Delta_;         //!< radius of trust region 
-
+ 
 
     // optimize in method of GaussNetow
     void optimizeGaussNetow(StateType& state);

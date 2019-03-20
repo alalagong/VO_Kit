@@ -38,11 +38,16 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 find_package(Eigen3 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIR})
 
-# Module aligment
-add_subdirectory(module/alignment)
-set(Alignment_INCLUDE_DIR ${PROJECT_SOURCE_DIR}module/alignment/include)
+# Sophus Library
+find_package(Sophus REQUIRED)
+include_directories(${Sophus_INCLUDE_DIR})
 
 # Module math_utils
 add_subdirectory(module/math_utils)
-set(Math_utils_INCLUDE_DIR ${PROJECT_SOURCE_DIR}module/math_utils/include)
+set(Math_utils_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/module/math_utils/include)
+
+# Module aligment
+add_subdirectory(module/alignment)
+set(Alignment_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/module/alignment/include)
+
 

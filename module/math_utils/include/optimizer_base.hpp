@@ -1,8 +1,6 @@
 #ifndef _OPTIMIZER_BASE_HPP_
 #define _OPTIMIZER_BASE_HPP_
 
-
-
 template<int D, typename T>
 bool vo_kit::Optimizer<D, T>::runOptimize(StateType& state)
 {  
