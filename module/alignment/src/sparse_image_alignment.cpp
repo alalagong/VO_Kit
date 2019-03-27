@@ -99,7 +99,7 @@ void SparseImgAlign::preCompute()
             const float* data_img_pattern = data_img_ref + y_pattern*stride + x_pattern;
             const float x_img_pattern = ftr_level_x + x_pattern;
             const float y_img_pattern = ftr_level_y + y_pattern;
-            data_patch_ref[pattern_count++] = interpolate_float(data_img_pattern, x_img_pattern, y_img_pattern, stride);
+            data_patch_ref[pattern_count++] = utils::interpolate_float(data_img_pattern, x_img_pattern, y_img_pattern, stride);
         }
         
         if(is_in_frame)

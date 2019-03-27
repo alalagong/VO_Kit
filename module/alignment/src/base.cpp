@@ -41,7 +41,7 @@ void Frame::createImgPyr(const cv::Mat& img)
     for(size_t i=1; i<num_max_level_; ++i)
     {
         img_pyr_[i] = cv::Mat(img_pyr_[i-1].rows/2, img_pyr_[i-1].cols/2, CV_8U);
-        halfSample(img_pyr_[i-1],img_pyr_[i]);
+        utils::halfSample(img_pyr_[i-1],img_pyr_[i]);
     }
 
 }
