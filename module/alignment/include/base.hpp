@@ -63,9 +63,9 @@ public:
 
     typedef std::shared_ptr<Frame> Ptr;
     
-    size_t          num_max_level_;     //!< Max numbers of levels of pyramid
-    cv::KeyPoint    feature;            //!< the corner of image
-    static int      frame_count_;       //!< Count the number of frames
+    size_t                      num_max_level_;     //!< Max numbers of levels of pyramid
+    std::vector<cv::KeyPoint>   features;           //!< the corner of image
+    static int                  frame_count_;       //!< Count the number of frames
 
 
     void createImgPyr(const cv::Mat& img);

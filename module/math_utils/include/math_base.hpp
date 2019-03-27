@@ -14,6 +14,9 @@
 namespace vo_kit
 {
 
+namespace utils
+{
+
 typedef unsigned char uint8_t;
 
 inline double maxFabs(const Eigen::VectorXd& v)
@@ -94,6 +97,28 @@ void halfSample(const cv::Mat& in, cv::Mat& out)
 
 }
 
+/******************
+ * 坐标系  -------> x
+ *         |
+ *         |
+ *         y
+ ******************/
+//! the data should be the pointer of (x_i, y_i), or it may appear memory leak
+inline float interpolate_float(const float* data, const float x, const float y, const int stride)
+{
+  const int x_i = floor(x);
+  const int y_i = floor(y);
+  const float subpix_x = x - x_i;
+  const float subpix_y = y - y_i;
+  const float w_tl = (1.f-subpix_x) * (1.f-subpix_y);
+  const float w_tr = (subpix_x) * (1.f-subpix_y);
+  const float w_bl = (1.f-subpix_x) * (subpix_y);
+  const float w_br = subpix_x * subpix_y;
+
+  return w_tl*data[0] + w_tr*data[1] + w_bl*data[stride] + w_br*data[stride+1];
+}
+
+}
 } //end namespace
 
 #endif // _MATH_BASE_HPP_

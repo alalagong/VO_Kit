@@ -92,7 +92,7 @@ void vo_kit::Optimizer<D, T>::optimizeGaussNetow(StateType& state)
         
         // converged condition 
         // TODO: can add F(x_k+1) - F(x_K) condition
-        if( maxFabs(delta_x_) < epsilon_ && !std::isnan(delta_x_[0]))
+        if( utils::maxFabs(delta_x_) < epsilon_ && !std::isnan(delta_x_[0]))
         {
             converged_=true;
             stop_ = true;
@@ -126,7 +126,7 @@ void vo_kit::Optimizer<D, T>::optimizeLevenbergMarquardt(StateType& state)
         if(lambda_ < 0)
         {
             double tau = 1e-4;
-            lambda_ = tau*maxFabs(hessian_.diagonal());
+            lambda_ = tau*utils::maxFabs(hessian_.diagonal());
         }
         //! (H+lambda*I)
         hessian_ += lambda_*Matrix<double, D, D>::Identity();
@@ -177,7 +177,7 @@ void vo_kit::Optimizer<D, T>::optimizeLevenbergMarquardt(StateType& state)
             }
         }
         // whether is converged
-        if(maxFabs(delta_x_) < epsilon_)
+        if(utils::maxFabs(delta_x_) < epsilon_)
         {
             converged_ = true;
             stop_ = true;
@@ -257,7 +257,7 @@ void vo_kit::Optimizer<D, T>::optimizeDogLeg(StateType& state)
         }
         
 
-        if(maxFabs(delta_x_) < epsilon_)
+        if(utils::maxFabs(delta_x_) < epsilon_)
         {
             stop_ = true;
             converged_ = true;
