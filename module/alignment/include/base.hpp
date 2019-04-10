@@ -32,6 +32,19 @@ public:
     static int& width()  { return getCamera().width_;  }
     static Eigen::Matrix3d& K() { return getCamera().K_; }
 
+    static Eigen::Vector3d pixel2unitPlane(const double& u, const double& v)
+    {
+        Vector3d xyz;
+        xyz[0] = (u - cx())/fx();
+        xyz[1] = (v - cy())/fy();
+        xyz[2] = 1.0;
+        return xyz;
+    }
+
+    static Eigen::Vector2d project(const Eigen::Vector3d& p)
+    {
+        return K()*(p/p[2]);
+    }
 private:
     //TODO: read from files
     Cam():
@@ -72,21 +85,23 @@ public:
     void setPose(const Sophus::SE3d& pose);
     Sophus::SE3d getPose() const;
     cv::Mat getImage(size_t level) const; 
-    inline static Ptr create(const cv::Mat& img, const double time_stamp)
+    float getDepth(int u, int v) const;
+
+    inline static Ptr create(const cv::Mat& img, const cv::Mat& depth, const double time_stamp)
     {
-        return Ptr(new Frame(img, time_stamp));
+        return Ptr(new Frame(img, depth, time_stamp));
     }
     
 
 protected:
 
-    Frame(const cv::Mat& img, const double time_stamp);
+    Frame(const cv::Mat& img, const cv::Mat& depth, const double time_stamp);
     Frame(const Frame&) = delete;
     Frame &operator=(const Frame&) = delete;
 
     Sophus::SE3d     T_c_w_;             //!< Pose Transform from world to camera
-    ImgPyr          img_pyr_;           //!< Image pyramid
-
+    ImgPyr          img_pyr_;            //!< Image pyramid
+    cv::Mat         img_depth_;          //!< image of depth
 };
 
 

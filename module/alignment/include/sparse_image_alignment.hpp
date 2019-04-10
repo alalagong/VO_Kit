@@ -11,6 +11,7 @@ namespace vo_kit
 class SparseImgAlign : public Optimizer<6, Sophus::SE3d>
 {
     typedef std::vector<std::pair<int, int> > PatternType;
+    typedef Eigen::Matrix<double, Eigen::Dynamic, 2> MatX2;
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
@@ -30,7 +31,9 @@ private:
     int                 level_cur_;     //!< current level for optimizing
     int                 num_level_min_; //!< bottom level
     int                 num_level_max_; //!< top level
+    size_t              num_ftr_active_;//!< number of feature used to aligne image
     cv::Mat             patch_ref_;     //!< the reference patch rows=featurenum cols=patchsize 
+    MatX2               patch_dI_;      //!< gradient of patch
     PatternType         pattern_;       //!< pattern of patch, should put feature(center) to (0,0)
     std::vector<bool>   visible_ftr_;   //!< the visibility of feature projected from reference frame  
     Frame::Ptr          frame_ref_;     //!< frame of reference 

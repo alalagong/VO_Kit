@@ -6,15 +6,18 @@ namespace vo_kit
 
 int Frame::frame_count_ = 0; 
 
-Frame::Frame(const cv::Mat& img, const double time_stamp):
+Frame::Frame(const cv::Mat& img, const cv::Mat& depth, const double time_stamp):
     num_max_level_(4)
 {   
-    assert(!img.empty());
+    assert(!img.empty() && !depth.empty());
+    assert(img.type == CV_8UC1);
+    assert(depth.type == CV_32FC1);
 
     T_c_w_ = Sophus::SE3d(Eigen::Matrix3d::Identity(), Eigen::Vector3d::Zero());
 
     // build image pyramid
     createImgPyr(img);
+    img_depth_ = depth;
 }
 
 cv::Mat Frame::getImage(size_t level) const
@@ -31,6 +34,11 @@ void Frame::setPose(const Sophus::SE3d& pose)
 Sophus::SE3d Frame::getPose() const
 {
     return T_c_w_;
+}
+
+float Frame::getDepth(int u, int v) const
+{
+    return img_depth_.at<float>(v, u);
 }
 
 void Frame::createImgPyr(const cv::Mat& img)
