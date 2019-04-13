@@ -127,10 +127,13 @@ void SparseImgAlign::preCompute()
     // residual_.resize(num_ftr_active, Eigen::NoChange);
 }
 
+
+
 //! NOTE myself: need to make sure residual match Jacobians
 void SparseImgAlign::computeResidual(const Sophus::SE3d& state)
 {
     residual_.setZero();
+    jacobian_.setZero();
     Sophus::SE3d T_cur_ref = state;
     cv::Mat img_cur_pyr = frame_cur_->getImage(level_cur_);
     size_t num_ftr = frame_ref_->features.size();
@@ -139,7 +142,7 @@ void SparseImgAlign::computeResidual(const Sophus::SE3d& state)
     const double scale = 1.f/(1<<level_cur_);
     auto iter_vis_ftr = visible_ftr_.begin();
 
-    for(int i_ftr=0; i_ftr<num_ftr; ++i_ftr, ++iter_vis_ftr)
+    for(size_t i_ftr=0; i_ftr<num_ftr; ++i_ftr, ++iter_vis_ftr)
     {
         if(!*iter_vis_ftr)
             continue;
@@ -193,6 +196,7 @@ void SparseImgAlign::computeResidual(const Sophus::SE3d& state)
         else
         {
             *iter_vis_ftr = false;
+            continue;
         }
 
         // calculate jacobians
@@ -202,35 +206,49 @@ void SparseImgAlign::computeResidual(const Sophus::SE3d& state)
             const double y = point_ref[1];
             const double z_inv = 1./point_ref[2];
             const double z_inv_2 = z_inv*z_inv;
-            jacob_xyz2uv(0,0) = -z_inv;              // -1/z
-            jacob_xyz2uv(0,1) = 0.0;                 // 0
-            jacob_xyz2uv(0,2) = x*z_inv_2;           // x/z^2
+            jacob_xyz2uv(0,0) = -z_inv;                         // -1/z
+            jacob_xyz2uv(0,1) = 0.0;                            // 0
+            jacob_xyz2uv(0,2) = x*z_inv_2;                      // x/z^2
             jacob_xyz2uv(0,3) = y*jacob_xyz2uv(0,2);            // x*y/z^2
             jacob_xyz2uv(0,4) = -(1.0 + x*jacob_xyz2uv(0,2));   // -(1.0 + x^2/z^2)
-            jacob_xyz2uv(0,5) = y*z_inv;             // y/z
-            jacob_xyz2uv(1,0) = 0.0;                 // 0
-            jacob_xyz2uv(1,1) = -z_inv;              // -1/z
-            jacob_xyz2uv(1,2) = y*z_inv_2;           // y/z^2
+            jacob_xyz2uv(0,5) = y*z_inv;                        // y/z
+            jacob_xyz2uv(1,0) = 0.0;                            // 0
+            jacob_xyz2uv(1,1) = -z_inv;                         // -1/z
+            jacob_xyz2uv(1,2) = y*z_inv_2;                      // y/z^2
             jacob_xyz2uv(1,3) = 1.0 + y*jacob_xyz2uv(1,2);      // 1.0 + y^2/z^2
             jacob_xyz2uv(1,4) = -jacob_xyz2uv(0,3);             // -x*y/z^2
-            jacob_xyz2uv(1,5) = -x*z_inv;            // x/z
+            jacob_xyz2uv(1,5) = -x*z_inv;                       // x/z
+
+            jacob_xyz2uv.row(0) *= Cam::fx();
+            jacob_xyz2uv.row(1) *= Cam::fy();
+
+            jacobian_.block(num_pattern*i_ftr, 0, num_pattern, 6) = 
+                    patch_dI_.block(num_pattern*i_ftr, 0, num_pattern, 2) * jacob_xyz2uv;
         }
-        jacobian_.block();
-        
     }
 
-    
-    
-
 }
+
 
 //bug: 当初optimizer写的太死了，逆向组合不用每次计算jacobian....
 void SparseImgAlign::computeJacobian(const Sophus::SE3d& state)
 {
-    // jacobian_.setZero();
-    // Sophus::SE3d T_cur_ref = state;
-    //! 内部每次还得计算hessian 
-
+    //! 内部每次还得计算hessian (；′⌒`)
 }
+
+
+bool SparseImgAlign::solve()
+{
+    delta_x_ = hessian_.ldlt().solve(jres_);
+    if((double)std::isnan(delta_x_[0]))
+        return false;
+    return true;
+}
+
+void SparseImgAlign::update(const Sophus::SE3d& old_state, Sophus::SE3d& new_state)
+{
+    new_state = old_state*Sophus::SE3d::exp(delta_x_);
+}
+
 
 } // end vo_kit

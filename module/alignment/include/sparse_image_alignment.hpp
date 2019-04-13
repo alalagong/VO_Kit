@@ -29,8 +29,8 @@ public:
 private:
 
     int                 level_cur_;     //!< current level for optimizing
-    int                 num_level_min_; //!< bottom level
     int                 num_level_max_; //!< top level
+    int                 num_level_min_; //!< bottom level
     size_t              num_ftr_active_;//!< number of feature used to aligne image
     cv::Mat             patch_ref_;     //!< the reference patch rows=featurenum cols=patchsize 
     MatX2               patch_dI_;      //!< gradient of patch

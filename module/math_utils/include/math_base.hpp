@@ -38,7 +38,7 @@ inline double maxFabs(const Eigen::VectorXd& v)
   }
 
 
-void halfSampleSSE2(const unsigned char* in, unsigned char* out, int w, int h)
+inline void halfSampleSSE2(const unsigned char* in, unsigned char* out, int w, int h)
 {
   const unsigned long long mask[2] = {0x00FF00FF00FF00FFull, 0x00FF00FF00FF00FFull};
   const unsigned char* nextRow = in + w;
@@ -65,7 +65,7 @@ void halfSampleSSE2(const unsigned char* in, unsigned char* out, int w, int h)
   }
 }
 
-void halfSample(const cv::Mat& in, cv::Mat& out)
+inline void halfSample(const cv::Mat& in, cv::Mat& out)
 {
   assert( in.rows/2==out.rows && in.cols/2==out.cols );
   assert( in.type()==CV_8U && out.type()==CV_8U );
