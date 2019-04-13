@@ -88,15 +88,15 @@ public:
     cv::Mat getImage(size_t level) const; 
     float getDepth(int u, int v) const;
 
-    inline static Ptr create(const cv::Mat& img, const cv::Mat& depth, const double time_stamp)
+    inline static Ptr create(const cv::Mat& img, const cv::Mat& depth, const size_t max_pyr)
     {
-        return Ptr(new Frame(img, depth, time_stamp));
+        return Ptr(new Frame(img, depth, max_pyr));
     }
     
 
 protected:
 
-    Frame(const cv::Mat& img, const cv::Mat& depth, const double time_stamp);
+    Frame(const cv::Mat& img, const cv::Mat& depth, const size_t max_pyr);
     Frame(const Frame&) = delete;
     Frame &operator=(const Frame&) = delete;
 
@@ -168,7 +168,7 @@ public:
         return true;
     }
 
-
+    int size() {return N_;}
 
 public:
 

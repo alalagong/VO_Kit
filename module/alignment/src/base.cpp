@@ -6,15 +6,15 @@ namespace vo_kit
 
 int Frame::frame_count_ = 0; 
 
-Frame::Frame(const cv::Mat& img, const cv::Mat& depth, const double time_stamp):
-    num_max_level_(4)
+Frame::Frame(const cv::Mat& img, const cv::Mat& depth, const size_t max_pyr):
+    num_max_level_(max_pyr)
 {   
     assert(!img.empty() && !depth.empty());
     assert(img.type() == CV_8UC1);
     assert(depth.type() == CV_32FC1);
 
     T_c_w_ = Sophus::SE3d(Eigen::Matrix3d::Identity(), Eigen::Vector3d::Zero());
-
+    ++frame_count_;
     // build image pyramid
     createImgPyr(img);
     img_depth_ = depth;
