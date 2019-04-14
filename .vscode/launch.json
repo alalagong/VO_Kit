@@ -8,11 +8,15 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "/home/gong/Project/C++/VO_Kit/module/math_utils/bin/test_optimizer",
+            "program": "/home/gong/Project/C++/VO_Kit/module/alignment/bin/test_sparse_img_align",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
-            "environment": [],
+            "environment": [ 
+                {
+                "name":"SVO_DATASET_DIR",
+                "value":"/home/gong/catkin_ws/src/rpg_svo/svo/test/data/sin2_tex2_h1_v8_d"
+                }],
             "externalConsole": true,
             "MIMode": "gdb",
             "setupCommands": [

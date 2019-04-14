@@ -104,7 +104,7 @@ inline void halfSample(const cv::Mat& in, cv::Mat& out)
  *         y
  ******************/
 //! the data should be the origin, or it may appear memory leak
-inline float interpolate_float(const float* data, const float x, const float y, const int stride)
+inline float interpolate_uint8(const uint8_t* data, const float x, const float y, const int stride)
 {
   const int x_i = floor(x);
   const int y_i = floor(y);
@@ -115,7 +115,7 @@ inline float interpolate_float(const float* data, const float x, const float y, 
   const float w_bl = (1.f-subpix_x) * (subpix_y);
   const float w_br = subpix_x * subpix_y;
 
-  const float* data_cur = data + y_i*stride + x_i; 
+  const uint8_t* data_cur = data + y_i*stride + x_i; 
 
   return w_tl*data_cur[0] + w_tr*data_cur[1] + w_bl*data_cur[stride] + w_br*data_cur[stride+1];
 }

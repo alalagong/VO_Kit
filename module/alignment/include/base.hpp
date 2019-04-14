@@ -74,6 +74,7 @@ private:
 class Frame
 {
 public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
     typedef std::shared_ptr<Frame> Ptr;
     
@@ -84,9 +85,9 @@ public:
 
     void createImgPyr(const cv::Mat& img);
     void setPose(const Sophus::SE3d& pose);
-    Sophus::SE3d getPose() const;
-    cv::Mat getImage(size_t level) const; 
-    float getDepth(int u, int v) const;
+    inline Sophus::SE3d getPose() const { return T_c_w_; }
+    inline const cv::Mat& getImage(size_t level) const { assert(level <= num_max_level_ && level > 0);  return img_pyr_[level]; }  
+    inline float getDepth(int u, int v) const{ return img_depth_.at<float>(v, u);}
 
     inline static Ptr create(const cv::Mat& img, const cv::Mat& depth, const size_t max_pyr)
     {
@@ -101,8 +102,9 @@ protected:
     Frame &operator=(const Frame&) = delete;
 
     Sophus::SE3d     T_c_w_;             //!< Pose Transform from world to camera
-    ImgPyr          img_pyr_;            //!< Image pyramid
     cv::Mat         img_depth_;          //!< image of depth
+    ImgPyr          img_pyr_;            //!< Image pyramid
+
 };
 
 
@@ -119,9 +121,11 @@ public:
         dataset_file += "trajectory.txt";
         std::ifstream  data_stream;
         data_stream.open(dataset_file.c_str());
+        assert(data_stream.is_open());
+
         while(!data_stream.eof())
         {
-            string s;
+            std::string s;
             std::getline(data_stream, s);
             if(!s.empty()){
                 std::stringstream ss;
@@ -158,7 +162,7 @@ public:
     {
         if(index >= N_)
         {
-            std::cerr << " Index(" << index << ") is out of scape, max should be (0~" << N - 1 << ")";
+            std::cerr << " Index(" << index << ") is out of scape, max should be (0~" << N_ - 1 << ")";
             return false;
         }
         timestamp = timestamps_[index];

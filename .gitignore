@@ -2,4 +2,5 @@
 **bin**
 *.ipch
 /module/alignment/bin/
+*.txt
 

@@ -63,12 +63,12 @@ size_t SparseImgAlign::run(Frame::Ptr frame_ref, Frame::Ptr frame_cur)
 
 void SparseImgAlign::preCompute()
 {
-    cv::Mat img_ref_pyr = frame_ref_->getImage(level_cur_);
+    const cv::Mat img_ref_pyr = frame_ref_->getImage(level_cur_);
     patch_dI_.setZero();
     // size_t num_ftr_active = 0;
     size_t num_ftr = frame_ref_->features.size();
     const double scale = 1.f/(1<<level_cur_); // current level
-    int stride = img_ref_pyr.step[0]; // step
+    int stride = img_ref_pyr.cols; // step
 
     auto iter_vis_ftr = visible_ftr_.begin();
 
@@ -105,13 +105,13 @@ void SparseImgAlign::preCompute()
             // const float* data_img_pattern = data_img_ref + y_pattern*stride + x_pattern;
             const float x_img_pattern = ftr_pyr_x + x_pattern;
             const float y_img_pattern = ftr_pyr_y + y_pattern;
-            data_patch_ref[pattern_count] = utils::interpolate_float(reinterpret_cast<float*>(img_ref_pyr.data), x_img_pattern, y_img_pattern, stride);
+            data_patch_ref[pattern_count] = utils::interpolate_uint8((img_ref_pyr.data), x_img_pattern, y_img_pattern, stride);
             
             // derive patch
-            float dx = 0.5*(utils::interpolate_float(reinterpret_cast<float*>(img_ref_pyr.data), x_img_pattern+1, y_img_pattern, stride) - 
-                            utils::interpolate_float(reinterpret_cast<float*>(img_ref_pyr.data), x_img_pattern-1, y_img_pattern, stride));
-            float dy = 0.5*(utils::interpolate_float(reinterpret_cast<float*>(img_ref_pyr.data), x_img_pattern, y_img_pattern+1, stride) - 
-                            utils::interpolate_float(reinterpret_cast<float*>(img_ref_pyr.data), x_img_pattern, y_img_pattern-1, stride));
+            float dx = 0.5*(utils::interpolate_uint8((img_ref_pyr.data), x_img_pattern+1, y_img_pattern, stride) - 
+                            utils::interpolate_uint8((img_ref_pyr.data), x_img_pattern-1, y_img_pattern, stride));
+            float dy = 0.5*(utils::interpolate_uint8((img_ref_pyr.data), x_img_pattern, y_img_pattern+1, stride) - 
+                            utils::interpolate_uint8((img_ref_pyr.data), x_img_pattern, y_img_pattern-1, stride));
             patch_dI_.row(i_ftr*pattern_.size()+pattern_count) = Eigen::Vector2d(dx, dy);
             ++pattern_count;
         }
@@ -135,10 +135,11 @@ void SparseImgAlign::computeResidual(const Sophus::SE3d& state)
     residual_.setZero();
     jacobian_.setZero();
     Sophus::SE3d T_cur_ref = state;
-    cv::Mat img_cur_pyr = frame_cur_->getImage(level_cur_);
+    // cv::Mat img_cur_pyr = frame_cur_->getImage(level_cur_);
+    const cv::Mat img_cur_pyr = frame_cur_->getImage(level_cur_);
     size_t num_ftr = frame_ref_->features.size();
     int num_pattern = pattern_.size();
-    int stride = img_cur_pyr.step[0];
+    int stride = img_cur_pyr.cols;
     const double scale = 1.f/(1<<level_cur_);
     auto iter_vis_ftr = visible_ftr_.begin();
 
@@ -182,7 +183,7 @@ void SparseImgAlign::computeResidual(const Sophus::SE3d& state)
 
             const float x_img_pattern = ftr_cur_x + x_pattern;
             const float y_img_pattern = ftr_cur_y + y_pattern;
-            float pattern_value = utils::interpolate_float(reinterpret_cast<float*>(img_cur_pyr.data), x_img_pattern, y_img_pattern, stride);
+            float pattern_value = utils::interpolate_uint8((img_cur_pyr.data), x_img_pattern, y_img_pattern, stride);
             // res = T-I
             residual_pattern[pattern_count] = data_patch_ref[pattern_count] - pattern_value;
             ++pattern_count;

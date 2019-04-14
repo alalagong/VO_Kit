@@ -4,7 +4,7 @@
 template<int D, typename T>
 bool vo_kit::Optimizer<D, T>::runOptimize(StateType& state)
 {  
-    #ifdef _OUTPUT_MESSAGES_
+#ifdef _OUTPUT_MESSAGES_
         switch (method_)
         {
             case GaussNewton:
@@ -79,7 +79,7 @@ void vo_kit::Optimizer<D, T>::optimizeGaussNetow(StateType& state)
         
         num_obser_ = jacobian_.rows();
 
-        if(chi2_ > chi2_new && !stop_)
+        if(chi2_ >= chi2_new && !stop_)
         {
             state = state_new;
             chi2_ = chi2_new;
