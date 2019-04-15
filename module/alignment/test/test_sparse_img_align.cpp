@@ -22,7 +22,7 @@ void readDepthMat(const std::string& file_name, cv::Mat& img)
                 return ;
             }
             depth_reader >> val;
-            img_p[x] = val/100.0; // cm 2 m
+            img_p[x] = val; 
         }
     }
 
@@ -118,7 +118,10 @@ void Sparse_ImgAlign_Test(const std::string& data_path, double& error)
             frame_ref->setPose(T_w_gt.inverse()); // first as groundtruth
 
             frame_ref->features = good_fast_point; // set feature
-            ofs <<"# \t tx \t ty \t tz \t qx \t qy \t qz \t qw"<<std::endl;
+            ofs <<"#  tx  ty  tz  qx  qy  qz  qw"<<std::endl;
+            ofs << std::fixed;
+            ofs << std::setprecision(4) << frame_ref->getPose().inverse().translation().transpose() << " "
+                << frame_ref->getPose().inverse().unit_quaternion().vec().transpose()<<" "<<frame_ref->getPose().inverse().unit_quaternion().w()<<std::endl;
             continue;
         }
 
@@ -134,12 +137,12 @@ void Sparse_ImgAlign_Test(const std::string& data_path, double& error)
 #ifdef _OUTPUT_MESSAGES_
         std::cout<<"NO."<<i;
         std::cout<<" Number of pixels used in alignment is "<<is_good;
-        std::cout<<" Cost time is "<<duration<<std::endl;
+        std::cout<<" Cost time is "<<duration<<"ms"<<std::endl;
 #endif
         Sophus::SE3d T_w_cur_et = frame_cur->getPose().inverse();
 
-        ofs << T_w_cur_et.translation().transpose() << " "
-            << T_w_cur_et.unit_quaternion().vec().transpose()<<" "<<T_w_cur_et.unit_quaternion().w()<<std::endl;
+        ofs << std::setprecision(4) << T_w_cur_et.translation().transpose() << " "
+            << std::setprecision(4) << T_w_cur_et.unit_quaternion().vec().transpose()<<" "<<T_w_cur_et.unit_quaternion().w()<<std::endl;
 
         //* compute error
         Sophus::SE3d T_w_cur_gt(sequence.q_[i], sequence.t_[i]);

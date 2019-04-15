@@ -131,6 +131,7 @@ public:
                 std::stringstream ss;
                 ss<<s;
                 double times, tx, ty, tz, qx, qy, qz, qw;
+                Eigen::Quaterniond q;
                 std::string file_name;
                 ss >> times;
                 timestamps_.push_back(times);
@@ -144,7 +145,9 @@ public:
                 ss >> qy;
                 ss >> qz;
                 ss >> qw;
-                q_.push_back(Eigen::Quaterniond(qx, qy, qz, qw));
+                q = Eigen::Quaterniond(qw, qx, qy, qz);
+                q.normalize();
+                q_.push_back(q);
             }
         }
         

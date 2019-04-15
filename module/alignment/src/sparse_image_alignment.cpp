@@ -248,7 +248,7 @@ bool SparseImgAlign::solve()
 
 void SparseImgAlign::update(const Sophus::SE3d& old_state, Sophus::SE3d& new_state)
 {
-    new_state = old_state*Sophus::SE3d::exp(delta_x_);
+    new_state = old_state*Sophus::SE3d::exp(-delta_x_);
 }
 
 
